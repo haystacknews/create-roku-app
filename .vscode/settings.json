@@ -1,0 +1,16 @@
+{
+    "files.exclude": {
+        "node_modules": true,
+        ".nyc_output": true,
+        ".eslintrc.cjs": true
+    },
+    "search.exclude": {
+        "dist/**/*": true,
+        ".nyc_output": true,
+        ".eslintrc.cjs": true
+    },
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "eslint.validate": ["typescript"]
+}
