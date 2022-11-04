@@ -1,0 +1,55 @@
+{
+    "rules": {
+        /* Code style rules */
+        // Do not allow inline `if` statements.
+        "inline-if-style": "never",
+        // Always use `then` in block `if` statements.
+        "block-if-style": "no-then",
+        // Always group `if` statement conditions with parenthesis.
+        "condition-style": "group",
+        // Use `sub` for `Void` functions. Otherwise, use `function`.
+        // For both named and anonymous functions.
+        "named-function-style": "auto",
+        "anon-function-style": "auto",
+        // Enforce presence of commas in associate array literals without
+        // leaving one dangling.
+        "aa-comma-style": "no-dangling",
+        // Allow `print` statements.
+        "no-print": "off",
+        // Allow usage of todo comments in code
+        "no-todo": "off",
+        // Prevent usage of STOP statements in the code
+        "no-stop": "error",
+        // Force all files to finish with a newline.
+        "eol-last": "always",
+
+        /* Strictness rules */
+        // Enforce both arguments and return `as` type annotations.
+        "type-annotations": "all",
+
+        /* Code flow rules */
+        // Check if a variable is not assigned in all the possible code paths.
+        "assign-all-paths": "warn",
+        // Consider loops as unsafe code paths. Assingnments inside them may not happen.
+        "unsafe-path-loop": "warn",
+        // Loop iterator variables should not be outside the loop.
+        "unsafe-iterators": "error",
+        // Warn about unreachable code.
+        "unreachable-code": "warn",
+        // Warn about inconsistent variable casing.
+        "case-sensitivity": "warn",
+        // Warn about variables being set but never used.
+        // Set as "warn" instead of "error" beacuse we may want to allow unused variables
+        // that will be shown on the crash logs.
+        "unused-variable": "warn",
+        // verifies consistency of `sub` / `function` returned values
+        // (missing return, missing value, returned value while function is `as void`,...)
+        "consistent-return": "error"
+    },
+    "globals": [],
+    "ignores": [
+        "components/lib/**/*",
+        "source/lib/**/*",
+        "**/bslib.brs"
+    ]
+}

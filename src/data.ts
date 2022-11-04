@@ -61,6 +61,12 @@ export const questions: Array<prompts.PromptObject> = [
                 value: 'none'
             }
         ]
+    },
+    {
+        type: 'confirm',
+        name: 'initRepo',
+        message: 'Should we initialize a git repository?',
+        initial: true
     }
 ];
 
@@ -96,7 +102,7 @@ export const mainSceneScript = `sub init()
 end sub
 `;
 
-export const mainScript = `sub main()
+export const mainScript = (injectRdb: boolean) => `sub main()
     screen = CreateObject("roSGScreen")
     m.port = CreateObject("roMessagePort")
     screen.setMessagePort(m.port)
@@ -104,7 +110,9 @@ export const mainScript = `sub main()
 
     scene = screen.CreateScene("MainScene")
     screen.show()
-
+${injectRdb
+        ? '\n\t\' The following comment is to enable the SceneGraph inspector\n\t\' on the VSCode BrightScript plugin.\n\n\t\' vscode_rdb_on_device_component_entry\n'
+        : ''}
     while(true)
         msg = wait(0, m.port)
         msgType = type(msg)
@@ -114,3 +122,48 @@ export const mainScript = `sub main()
     end while
 end sub
 `;
+
+export const basePackageJson: any = {
+    private: true,
+    version: '0.0.1',
+    dependencies: {},
+    devDependencies: {},
+    scripts: {}
+};
+
+export const baseVscodeConfig: Record<string, any> = {
+    'type': 'brightscript',
+    'request': 'launch',
+    // eslint-disable-next-line no-template-curly-in-string
+    'host': '${promptForHost}',
+    'password': 'rokudev',
+    'stopOnEntry': false,
+    'enableDebuggerAutoRecovery': false,
+    'stopDebuggerOnAppExit': false
+};
+
+export const VscodeTasks: Record<string, any> = {
+    'label': 'build',
+    'presentation': {
+        'close': true,
+        'reveal': 'silent',
+        'revealProblems': 'onProblem'
+    },
+    'script': 'build',
+    'type': 'npm'
+};
+
+export const bsconfigBase: Record<string, any> = {
+    diagnosticLevel: 'error',
+    retainStagingFolder: true,
+    rootDir: 'src/',
+    plugins: [],
+    files: [
+        'source/**/*',
+        'components/**/*',
+        'images/**/*',
+        'fonts/**/*',
+        'manifest'
+    ],
+    stagingFolderPath: 'dist/build'
+};
