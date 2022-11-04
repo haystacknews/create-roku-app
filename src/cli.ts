@@ -8,7 +8,7 @@ import { resolve } from 'path';
 import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
 import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
 
-export async function main() {
+export async function cli() {
     // Collect initial answers
     let answers = recommendedAnswers;
     const argv = await yargs(hideBin(process.argv)).argv;
@@ -103,5 +103,3 @@ export async function main() {
         writeFile(`${folderName}/src/source/main.${answers.language}`, mainScript(answers.inspector === 'plugin'))
     ]);
 }
-
-void main();

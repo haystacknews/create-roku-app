@@ -1,12 +1,16 @@
 {
-  "private": true,
+  "name": "create-roku-app",
   "version": "0.0.1",
   "engines": {
     "node": ">= 16.14.2",
     "npm": ">= 8.9.0"
   },
   "engineStrict": true,
+  "bin": "dist/index.js",
   "scripts": {
+    "prebuild": "rm -rf dist/",
+    "build": "tsc",
+    "postbuild": "cp -r src/static dist/static/",
     "dumb-test": "rm -rf test-project; ts-node src/main.ts --name \"Test Project\""
   },
   "devDependencies": {
