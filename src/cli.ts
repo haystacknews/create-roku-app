@@ -54,7 +54,7 @@ export async function cli() {
     await Promise.all([
         mkdir(`${folderName}/src`),
         mkdir(`${folderName}/.vscode`),
-        copyFile(resolve(__dirname, './static/.gitignore'), `${folderName}/.gitignore`)
+        copyFile(resolve(__dirname, './static/_gitignore'), `${folderName}/.gitignore`)
     ]);
 
     if (requiresDependencies) {
