@@ -58,7 +58,7 @@ export async function main() {
     ]);
 
     if (requiresDependencies) {
-        await writeFile(`${folderName}/package.json`, JSON.stringify(generatePackageJson(answers), null, 4));
+        await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {

@@ -1,6 +1,7 @@
-/* eslint-disable no-template-curly-in-string */
-import { basePackageJson, baseVscodeConfig, bsconfigBase, manifest } from './data';
 import type prompts from 'prompts';
+import { exec } from 'child_process';
+
+import { basePackageJson, baseVscodeConfig, bsconfigBase, manifest } from './data';
 
 export function generateManifestString(answers: prompts.Answers<string>): string {
     const finalManifest = new Map<string, string>([
@@ -13,23 +14,47 @@ export function generateManifestString(answers: prompts.Answers<string>): string
     }).join('\n');
 }
 
-export function generatePackageJson(answers: prompts.Answers<string>) {
+// TODO: This is too slow, any way to speed it up?
+async function getPackageVersion(packageName: string) {
+    return new Promise((resolve, reject) => {
+        exec(`npm view ${packageName} --json`, (err, stdout, stderr) => {
+            if (err) {
+                reject(err);
+            }
+            if (stderr) {
+                reject(stderr);
+            }
+            resolve(JSON.parse(stdout).version);
+        });
+    });
+}
+
+export async function generatePackageJson(answers: prompts.Answers<string>) {
     const contents = basePackageJson;
 
     if (answers.language === 'bs') {
         contents.scripts.build = 'bsc --stagingFolderPath=dist/build';
         contents.scripts['build:prod'] = 'bsc --stagingFolderPath=dist/build --sourceMap=false';
+
+        const bsVersion = await getPackageVersion('brighterscript');
+        contents.devDependencies.brighterscript = `^${bsVersion}`;
     }
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
         contents.scripts.lint = 'bslint --project config/bsconfig.lint.json';
         contents.scripts['lint:fix'] = 'npm run lint -- --fix';
+
+        const linterVersion = await getPackageVersion('@rokucommunity/bslint');
+        contents.devDependencies['@rokucommunity/bslint'] = `^${linterVersion}`;
     }
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'formatter') {
         contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" --bsfmt-path "config/bsfmt.jsonc"';
         contents.scripts.format = 'npm run format:base -- --check';
         contents.scripts['format:fix'] = 'npm run format:base -- --write';
+
+        const formatterVersion = await getPackageVersion('brighterscript-formatter');
+        contents.devDependencies['brighterscript-formatter'] = `^${formatterVersion}`;
     }
 
     return contents;
@@ -39,6 +64,7 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
     const vscodeConfig = baseVscodeConfig;
 
     if (answers.language === 'brs') {
+        // eslint-disable-next-line no-template-curly-in-string
         vscodeConfig.rootDir = '${workspaceFolder}/src';
         vscodeConfig.files = [
             'source/**/*',
@@ -48,6 +74,7 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
             'manifest'
         ];
     } else {
+        // eslint-disable-next-line no-template-curly-in-string
         vscodeConfig.rootDir = '${workspaceFolder}/dist/build';
         vscodeConfig.preLaunchTask = 'build';
     }
