@@ -18,6 +18,18 @@ export function generatePackageJson(answers: prompts.Answers<string>) {
 
     if (answers.language === 'bs') {
         contents.scripts.build = 'bsc --stagingFolderPath=dist/build';
+        contents.scripts['build:prod'] = 'bsc --stagingFolderPath=dist/build --sourceMap=false';
+    }
+
+    if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
+        contents.scripts.lint = 'bslint --project config/bsconfig.lint.json';
+        contents.scripts['lint:fix'] = 'npm run lint -- --fix';
+    }
+
+    if (answers.lintFormat === 'both' || answers.lintFormat === 'formatter') {
+        contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" --bsfmt-path "config/bsfmt.jsonc"';
+        contents.scripts.format = 'npm run format:base -- --check';
+        contents.scripts['format:fix'] = 'npm run format:base -- --write';
     }
 
     return contents;

@@ -7,10 +7,7 @@
   },
   "engineStrict": true,
   "scripts": {
-    "test": "nyc ts-mocha src/**/*.spec.ts",
-    "test:nocover": "ts-mocha src/**/*.spec.ts",
-    "lint": "eslint src/**/",
-    "lint:fix": "eslint src/**/ --fix"
+    "dumb-test": "rm -rf test-project; ts-node src/main.ts --name \"Test Project\""
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
