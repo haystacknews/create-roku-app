@@ -44,20 +44,15 @@ export const questions: Array<prompts.PromptObject> = [
     {
         type: 'select',
         name: 'inspector',
-        message: 'SceneGraph Inspector',
+        message: 'Enable SceneGraph Inspector',
         choices: [
             {
-                title: 'Use the VSCode integrated inspector (recommended)',
-                description: 'A faster and more insightful alternative to RALE within the Visual Studio Code plugin.',
+                title: 'Enable (recommended)',
+                description: 'A faster and more insightful SceneGraph inspector within the Visual Studio Code plugin.',
                 value: 'plugin'
             },
             {
-                title: 'Use RALE',
-                description: 'The official SceneGraph inspector provided by Roku.',
-                value: 'rale'
-            },
-            {
-                title: 'I don\'t want any of that',
+                title: 'Not this time',
                 value: 'none'
             }
         ]
