@@ -104,9 +104,7 @@ export async function cli() {
     }
 
     // Create bsconfig files
-    if (answers.language === 'bs' || answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
-        await Promise.all(generateBsConfigFiles(folderName, answers).map(file => writeFile(file.path, file.content)));
-    }
+    await Promise.all(generateBsConfigFiles(folderName, answers).map(file => writeFile(file.path, file.content)));
 
     await Promise.all([
         // Create tree below components/
@@ -145,7 +143,7 @@ export async function cli() {
     }
 
     console.log(`\nDone! Remaining steps for you:`);
-    console.log(`- Open your project with \`code ${folderName}\``);
+    console.log(`- Open your project with \`code ${folderName}\`.`);
     console.log(`- Open \`bsconfig.json\` and set the preferred password for your device.`);
     console.log('- Go to the Run & Debug panel and launch your application.\n');
     console.log('Happy coding!');

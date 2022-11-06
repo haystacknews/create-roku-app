@@ -110,7 +110,7 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
 export function generateBsConfigFiles(folderName: string, answers: prompts.Answers<string>): { path: string; content: string }[] {
     const files: { path: string; content: string }[] = [];
 
-    const bsconfig = bsconfigBase;
+    let bsconfig: any = {};
 
     if (answers.language === 'bs') {
         bsconfig.sourceMap = true;
@@ -118,23 +118,15 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
         bsconfig.lintConfig = 'config/bslint.jsonc';
-        bsconfig.plugins.push('@rokucommunity/bslint');
+        bsconfig.plugins = ['@rokucommunity/bslint'];
 
-        let bsconfigLintContent: any = {
+        const bsconfigLintContent = {
+            extends: 'bsconfig.base.json',
             deploy: false,
             retainStagingFolder: false,
             createPackage: false,
             sourceMap: false
         };
-
-        if (answers.language === 'bs') {
-            bsconfigLintContent.extends = 'bsconfig.base.json';
-        } else {
-            bsconfigLintContent = {
-                ...bsconfig,
-                ...bsconfigLintContent
-            };
-        }
 
         files.push({
             path: `${folderName}/config/bsconfig.lint.json`,
@@ -142,7 +134,8 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
         });
     }
 
-    if (answers.language === 'bs') {
+    if (answers.language === 'bs' || answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
+        bsconfig = { ...bsconfigBase, ...bsconfig };
         files.push({
             path: `${folderName}/config/bsconfig.base.json`,
             content: JSON.stringify(bsconfig, null, 4)
@@ -151,6 +144,11 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
         files.push({
             path: `${folderName}/bsconfig.json`,
             content: JSON.stringify({ extends: 'config/bsconfig.base.json', host: '', password: '' }, null, 4)
+        });
+    } else {
+        files.push({
+            path: `${folderName}/bsconfig.json`,
+            content: JSON.stringify({ ...bsconfig, host: '', password: '' }, null, 4)
         });
     }
 
