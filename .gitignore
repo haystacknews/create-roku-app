@@ -4,3 +4,4 @@ node_modules/
 .env
 test-project
 dist
+*.tgz

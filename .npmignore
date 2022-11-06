@@ -4,5 +4,6 @@ node_modules
 src
 test-project
 .eslintrc.cjs
-package.json
 tsconfig.json
+.nyc_output
+*.tgz

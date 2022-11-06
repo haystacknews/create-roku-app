@@ -1,9 +1,8 @@
 {
-  "name": "@haystacknews/create-roku-app",
+  "name": "create-roku-app",
   "version": "0.0.2",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "bin": "dist/index.js",
   "scripts": {
     "prebuild": "rm -rf dist/",
     "build": "tsc",
