@@ -7,6 +7,7 @@ import { resolve } from 'path';
 
 import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
 import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
+import { spawn } from 'child_process';
 
 export async function cli() {
     // Collect initial answers
@@ -42,8 +43,6 @@ export async function cli() {
             initial: true
         })).value;
     }
-
-    console.log(install);
 
     const folderName = answers.name.replaceAll(' ', '-').toLowerCase();
 
@@ -102,4 +101,30 @@ export async function cli() {
         // Create main script
         writeFile(`${folderName}/src/source/main.${answers.language}`, mainScript(answers.inspector === 'plugin'))
     ]);
+
+    if (answers.initRepo) {
+        console.log('Initializing Git repository...');
+        await new Promise((resolve, reject) => {
+            const child = spawn('git', ['init'], {
+                cwd: folderName,
+                stdio: 'inherit'
+            });
+
+            child.on('error', reject);
+            child.on('exit', resolve);
+        });
+    }
+
+    if (install) {
+        console.log('Installing dependencies...');
+        await new Promise((resolve, reject) => {
+            const child = spawn('npm', ['install'], {
+                cwd: folderName,
+                stdio: 'inherit'
+            });
+
+            child.on('error', reject);
+            child.on('exit', resolve);
+        });
+    }
 }
