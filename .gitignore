@@ -5,3 +5,4 @@ node_modules/
 test-project
 dist
 *.tgz
+package-lock.json

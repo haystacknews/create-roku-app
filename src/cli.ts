@@ -4,12 +4,15 @@ import generate from 'project-name-generator';
 import { hideBin } from 'yargs/helpers';
 import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
+import InfProgress from 'cli-infinity-progress';
 
 import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
 import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
 import { spawn } from 'child_process';
 
 export async function cli() {
+    const progress = new InfProgress();
+
     // Collect initial answers
     let answers = recommendedAnswers;
     const argv = await yargs(hideBin(process.argv)).argv;
@@ -57,7 +60,9 @@ export async function cli() {
     ]);
 
     if (requiresDependencies) {
+        progress.setHeader('Grabbing latest dependencies').start();
         await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
+        progress.stop();
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {
@@ -103,7 +108,7 @@ export async function cli() {
     ]);
 
     if (answers.initRepo) {
-        console.log('Initializing Git repository...');
+        progress.setHeader('Initializing Git repository');
         await new Promise((resolve, reject) => {
             const child = spawn('git', ['init'], {
                 cwd: folderName,
@@ -116,7 +121,7 @@ export async function cli() {
     }
 
     if (install) {
-        console.log('Installing dependencies...');
+        progress.setHeader('Installing dependencies').start();
         await new Promise((resolve, reject) => {
             const child = spawn('npm', ['install'], {
                 cwd: folderName,
@@ -126,5 +131,9 @@ export async function cli() {
             child.on('error', reject);
             child.on('exit', resolve);
         });
+        progress.stop();
     }
+
+    console.log(`\nDone! Now run \`code ${folderName}\`, go to the Run & Debug panel and launch your app.`);
+    console.log('Hapy coding! Bye :)');
 }
