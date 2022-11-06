@@ -85,22 +85,31 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
 
     const vscodeLaunchSettings: { version: string; configurations: Record<string, any>[] } = {
         version: '0.2.0',
-        configurations: [{
-            ...vscodeConfig,
-            name: `Launch ${answers.name}`
-        }]
+        configurations: []
     };
 
     if (answers.language === 'bs' || answers.inspector === 'plugin') {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        vscodeLaunchSettings.configurations[0]!.name += ' (dev)';
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        vscodeLaunchSettings.configurations[0]!.injectRdbOnDeviceComponent = true;
+        const devLaunchConfig: any = {
+            ...vscodeConfig,
+            name: `Launch ${answers.name} (dev)`,
+            injectRdbOnDeviceComponent: true
+        };
 
+        const prodLaunchConfig: any = {
+            ...vscodeConfig,
+            name: `Launch ${answers.name} (prod)`
+        };
+
+        if (answers.language === 'bs') {
+            devLaunchConfig.preLaunchTask = 'build';
+            prodLaunchConfig.preLaunchTask = 'build-prod';
+        }
+
+        vscodeLaunchSettings.configurations.push(devLaunchConfig, prodLaunchConfig);
+    } else {
         vscodeLaunchSettings.configurations.push({
             ...vscodeConfig,
-            preLaunchTask: 'build-prod',
-            name: `Launch ${answers.name} (prod)`
+            name: `Launch ${answers.name}`
         });
     }
 
@@ -111,6 +120,10 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
     const files: { path: string; content: string }[] = [];
 
     let bsconfig: any = {};
+    const hostAndPwd = {
+        host: 'If your Roku IP is static, you can set it here and remove the host entry from .vscode/launch.json',
+        password: ''
+    };
 
     if (answers.language === 'bs') {
         bsconfig.sourceMap = true;
@@ -143,12 +156,12 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
 
         files.push({
             path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ extends: 'config/bsconfig.base.json', host: '', password: '' }, null, 4)
+            content: JSON.stringify({ extends: 'config/bsconfig.base.json', ...hostAndPwd }, null, 4)
         });
     } else {
         files.push({
             path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ ...bsconfig, host: '', password: '' }, null, 4)
+            content: JSON.stringify({ ...bsconfig, ...hostAndPwd }, null, 4)
         });
     }
 
