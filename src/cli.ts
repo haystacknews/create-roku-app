@@ -37,12 +37,21 @@ export async function cli() {
 
     // Optional question to install dependencies, only if they would be required
     let install = false;
+    // Use npm by default, but allow the user to override
+    let installCommand = 'npm install';
+
     const requiresDependencies = answers.language === 'bs' || answers.lintFormat !== 'none';
     if (requiresDependencies) {
+        if (argv.pm === 'yarn') {
+            installCommand = 'yarn';
+        } else if (argv.pm === 'pnpm') {
+            installCommand = 'pnpm install';
+        }
+
         install = (await prompts({
             type: 'confirm',
             name: 'value',
-            message: 'Should we run `npm install` for you?',
+            message: `Should we run \`${installCommand}\` for you?`,
             initial: true
         })).value;
     }
@@ -60,9 +69,9 @@ export async function cli() {
     ]);
 
     if (requiresDependencies) {
-        progress.setHeader('Grabbing latest dependencies').start();
+        progress.setHeader('Searching latest dependencies').start();
         await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
-        progress.stop();
+        progress.remove();
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {
@@ -121,9 +130,11 @@ export async function cli() {
     }
 
     if (install) {
-        progress.setHeader('Installing dependencies').start();
+        console.log(`Installing dependencies with command \`${installCommand}\``);
         await new Promise((resolve, reject) => {
-            const child = spawn('npm', ['install'], {
+            const installCommandBase = String(installCommand.split(' ')[0]);
+            const installCommandArgs = installCommand.split(' ').slice(1);
+            const child = spawn(installCommandBase, installCommandArgs, {
                 cwd: folderName,
                 stdio: 'inherit'
             });
@@ -131,7 +142,6 @@ export async function cli() {
             child.on('error', reject);
             child.on('exit', resolve);
         });
-        progress.stop();
     }
 
     console.log(`\nDone! Remaining steps for you:`);

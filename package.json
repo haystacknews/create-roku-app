@@ -10,7 +10,7 @@
     "prebuild": "rm -rf dist/",
     "build": "tsc",
     "postbuild": "cp -r src/static dist/static/",
-    "manual-test": "rm -rf test-project; ts-node src/index.ts --name \"Test Project\"",
+    "manual-test": "rm -rf test-project; ts-node src/index.ts --name \"Test Project\" --pm pnpm",
     "prepublish": "npm run build"
   },
   "devDependencies": {
