@@ -103,16 +103,18 @@ export const mainScript = (injectRdb: boolean) => `sub main()
     screen.setMessagePort(m.port)
     m.global = screen.getGlobalNode()
 
-    scene = screen.CreateScene("MainScene")
+    screen.CreateScene("MainScene")
     screen.show()
 ${injectRdb
-        ? '\n\t\' The following comment is to enable the SceneGraph inspector\n\t\' on the VSCode BrightScript plugin.\n\n\t\' vscode_rdb_on_device_component_entry\n'
+        ? '\n    \' The following comment is to enable the SceneGraph inspector\n    \' on the VSCode BrightScript plugin.\n\n    \' vscode_rdb_on_device_component_entry\n'
         : ''}
     while(true)
         msg = wait(0, m.port)
         msgType = type(msg)
-        if msgType = "roSGScreenEvent"
-            if msg.isScreenClosed() then return
+        if (msgType = "roSGScreenEvent")
+            if (msg.isScreenClosed())
+                return
+            end if
         end if
     end while
 end sub
@@ -131,7 +133,6 @@ export const baseVscodeConfig: Record<string, any> = {
     'request': 'launch',
     // eslint-disable-next-line no-template-curly-in-string
     'host': '${promptForHost}',
-    'password': 'rokudev',
     'stopOnEntry': false,
     'enableDebuggerAutoRecovery': false,
     'stopDebuggerOnAppExit': false
@@ -151,7 +152,7 @@ export const VscodeTasks: Record<string, any> = {
 export const bsconfigBase: Record<string, any> = {
     diagnosticLevel: 'error',
     retainStagingFolder: true,
-    rootDir: 'src/',
+    rootDir: '../src/',
     plugins: [],
     files: [
         'source/**/*',
@@ -160,5 +161,6 @@ export const bsconfigBase: Record<string, any> = {
         'fonts/**/*',
         'manifest'
     ],
-    stagingFolderPath: 'dist/build'
+    stagingFolderPath: 'dist/build',
+    createPackage: false
 };

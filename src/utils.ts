@@ -15,6 +15,9 @@ export function generateManifestString(answers: prompts.Answers<string>): string
 }
 
 // TODO: This is too slow, any way to speed it up?
+/**
+ * Returns the latest version of the given package from the npm repository.
+ */
 async function getPackageVersion(packageName: string) {
     return new Promise((resolve, reject) => {
         exec(`npm view ${packageName} --json`, (err, stdout, stderr) => {
@@ -33,15 +36,16 @@ export async function generatePackageJson(answers: prompts.Answers<string>) {
     const contents = basePackageJson;
 
     if (answers.language === 'bs') {
-        contents.scripts.build = 'bsc --stagingFolderPath=dist/build';
-        contents.scripts['build:prod'] = 'bsc --stagingFolderPath=dist/build --sourceMap=false';
+        contents.scripts.prebuild = 'rm -rf dist';
+        contents.scripts.build = 'bsc';
+        contents.scripts['build:prod'] = 'npm run build -- --sourceMap=false';
 
         const bsVersion = await getPackageVersion('brighterscript');
         contents.devDependencies.brighterscript = `^${bsVersion}`;
     }
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
-        contents.scripts.lint = 'bslint --project config/bsconfig.lint.json';
+        contents.scripts.lint = 'bslint --project config/bsconfig.lint.json --lintConfig config/bslint.jsonc';
         contents.scripts['lint:fix'] = 'npm run lint -- --fix';
 
         const linterVersion = await getPackageVersion('@rokucommunity/bslint');
@@ -95,7 +99,7 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
 
         vscodeLaunchSettings.configurations.push({
             ...vscodeConfig,
-            preLaunchTask: 'build:prod',
+            preLaunchTask: 'build-prod',
             name: `Launch ${answers.name} (prod)`
         });
     }
@@ -113,7 +117,7 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
     }
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
-        bsconfig.lintConfig = 'bslint.jsonc';
+        bsconfig.lintConfig = 'config/bslint.jsonc';
         bsconfig.plugins.push('@rokucommunity/bslint');
 
         let bsconfigLintContent: any = {
@@ -145,13 +149,8 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
         });
 
         files.push({
-            path: `${folderName}/config/bsconfig.dev.json`,
-            content: JSON.stringify({ extends: 'bsconfig.base.json', deploy: true }, null, 4)
-        });
-
-        files.push({
             path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ extends: 'bsconfig.base.json', host: '', password: '' }, null, 4)
+            content: JSON.stringify({ extends: 'config/bsconfig.base.json', host: '', password: '' }, null, 4)
         });
     }
 

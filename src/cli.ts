@@ -134,6 +134,9 @@ export async function cli() {
         progress.stop();
     }
 
-    console.log(`\nDone! Now run \`code ${folderName}\`, go to the Run & Debug panel and launch your app.`);
-    console.log('Hapy coding! Bye :)');
+    console.log(`\nDone! Remaining steps for you:`);
+    console.log(`- Open your project with \`code ${folderName}\``);
+    console.log(`- Open \`bsconfig.json\` and set the preferred password for your device.`);
+    console.log('- Go to the Run & Debug panel and launch your application.\n');
+    console.log('Happy coding!');
 }
