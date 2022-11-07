@@ -20,7 +20,7 @@ npx create-roku-app --name "My App" --recommended
 
 1. Select a language
 
-    - **BrighterScript (recommended)**: A superset of the BrightScript language that includes modern features like classes, namespaces, compiler plugins and more. Compiles to Vanilla BrightScript.
+    - **[BrighterScript](https://github.com/rokucommunity/brighterscript) (recommended)**: A superset of the BrightScript language that includes modern features like classes, namespaces, compiler plugins and more. Compiles to Vanilla BrightScript.
 
     - Vanilla BrightScript: The old reliable language provided by Roku.
 
@@ -28,9 +28,9 @@ npx create-roku-app --name "My App" --recommended
 
     - **Install both (recommended)**
 
-    - Install linter only (bslint)
+    - Install linter only ([bslint](https://github.com/rokucommunity/bslint))
 
-    - Install formatter only (brighterscript-formatter)
+    - Install formatter only ([brighterscript-formatter](https://github.com/rokucommunity/brighterscript-formatter))
 
     - Not this time.
 
@@ -58,4 +58,4 @@ These are only available as CLI `--flags` and will not appear on the questions l
 
 ## Contribute
 
-You can see our issues list for things that need to be implemented. For any questions ping me ([@arturocuya](https://github.com/arturocuya)) on the Roku Developers [Slack channel](https://join.slack.com/t/rokudevelopers/shared_invite/zt-1fwucni9w-WizAcwB_rhL8nTctkO7trQ)
+You can see our issues list for things that need to be implemented. For any questions ping me ([@arturocuya](https://github.com/arturocuya)) on the Roku Developers [Slack channel](https://join.slack.com/t/rokudevelopers/shared_invite/zt-1fwucni9w-WizAcwB_rhL8nTctkO7trQ).
