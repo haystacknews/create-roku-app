@@ -1,6 +1,17 @@
 {
   "name": "create-roku-app",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "license": "MIT",
+  "description": "Quickly scaffold a modern Roku app, including the best practices to enhance your development experience.",
+  "keywords": ["roku", "scaffold", "generator"],
+  "bugs": {
+    "url" : "https://github.com/haystacknews/create-roku-app/issues",
+    "email" : "arturo@haystack.tv"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haystacknews/create-roku-app.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
