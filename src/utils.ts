@@ -161,7 +161,7 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
     } else {
         files.push({
             path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ ...bsconfig, ...hostAndPwd }, null, 4)
+            content: JSON.stringify({ ...bsconfig, ...hostAndPwd, rootDir: 'src' }, null, 4)
         });
     }
 
