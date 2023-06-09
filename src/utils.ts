@@ -1,5 +1,5 @@
 import type prompts from 'prompts';
-import { exec } from 'child_process';
+import * as https from 'https';
 
 import { basePackageJson, baseVscodeConfig, bsconfigBase, manifest } from './data';
 
@@ -14,21 +14,27 @@ export function generateManifestString(answers: prompts.Answers<string>): string
     }).join('\n');
 }
 
-// TODO: This is too slow, any way to speed it up?
-/**
- * Returns the latest version of the given package from the npm repository.
- */
 async function getPackageVersion(packageName: string) {
     return new Promise((resolve, reject) => {
-        exec(`npm view ${packageName} --json`, (err, stdout, stderr) => {
-            if (err) {
-                reject(err);
-            }
-            if (stderr) {
-                reject(stderr);
-            }
-            resolve(JSON.parse(stdout).version);
+        const req = https.request({
+            hostname: 'registry.npmjs.org',
+            path: `/${packageName}`,
+            port: 443,
+            method: 'GET'
+        }, (res) => {
+            let str = '';
+
+            res.on('data', (chunk) => {
+                str += chunk;
+            });
+
+            res.on('end', () => {
+                // Do stuff with your data (str)
+                resolve(JSON.parse(str)['dist-tags'].latest);
+            });
         });
+
+        req.end();
     });
 }
 
