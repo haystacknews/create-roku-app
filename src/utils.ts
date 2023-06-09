@@ -121,7 +121,7 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
 
     let bsconfig: any = {};
     const hostAndPwd = {
-        host: 'If your Roku IP is static, you can set it here and remove the host entry from .vscode/launch.json',
+        host: '',
         password: ''
     };
 
@@ -147,23 +147,29 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
         });
     }
 
+    let finalBsConfig = {};
+
     if (answers.language === 'bs' || answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
         bsconfig = { ...bsconfigBase, ...bsconfig };
         files.push({
             path: `${folderName}/config/bsconfig.base.json`,
             content: JSON.stringify(bsconfig, null, 4)
         });
-
-        files.push({
-            path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ extends: 'config/bsconfig.base.json', ...hostAndPwd }, null, 4)
-        });
+        finalBsConfig = { extends: 'config/bsconfig.base.json', ...hostAndPwd };
     } else {
-        files.push({
-            path: `${folderName}/bsconfig.json`,
-            content: JSON.stringify({ ...bsconfig, ...hostAndPwd, rootDir: 'src' }, null, 4)
-        });
+        finalBsConfig = { ...bsconfig, ...hostAndPwd, rootDir: 'src' };
     }
+
+    files.push(
+        {
+            path: `${folderName}/bsconfig.json`,
+            content: JSON.stringify(finalBsConfig, null, 4)
+        },
+        {
+            path: `${folderName}/bsconfig.example.json`,
+            content: JSON.stringify(finalBsConfig, null, 4)
+        }
+    );
 
     return files;
 }
