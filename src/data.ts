@@ -83,7 +83,7 @@ export const manifest = new Map<string, string>([
 ]);
 
 export const mainSceneXml = (suffix: string) => `<?xml version="1.0" encoding="UTF-8"?>
-<component name="MainScene" extends="Scene" xsi:noNamespaceSchemaLocation="https://devtools.web.roku.com/schema/RokuSceneGraph.xsd">
+<component name="MainScene" extends="Scene">
     <script type="text/brightscript" uri="MainScene.${suffix}" />
     <children>
         <Label id="welcome" />
