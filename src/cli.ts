@@ -10,6 +10,16 @@ import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswer
 import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
 import { spawn } from 'child_process';
 
+// Exits the process when the prompt is cancelled
+// (e.g: when the user presses ctrl|cmd + c)
+function exitPromptOnCancelled(state: any) {
+    if (state.aborted) {
+        process.nextTick(() => {
+            process.exit(0);
+        });
+    }
+}
+
 export async function cli() {
     const progress = new InfProgress();
 
@@ -22,7 +32,8 @@ export async function cli() {
             type: 'text',
             name: 'name',
             message: 'What\'s the name of your app?',
-            initial: generate({ alliterative: true }).dashed
+            initial: generate({ alliterative: true }).dashed,
+            onState: exitPromptOnCancelled
         })).name;
     } else {
         answers.name = argv.name;
@@ -31,7 +42,9 @@ export async function cli() {
     if (!argv.recommended) {
         answers = {
             ...answers,
-            ...(await prompts(questions))
+            ...(await prompts(
+                questions.map(q => ({ ...q, onState: exitPromptOnCancelled }))
+            ))
         };
     }
 
@@ -52,7 +65,8 @@ export async function cli() {
             type: 'confirm',
             name: 'value',
             message: `Should we run \`${installCommand}\` for you?`,
-            initial: true
+            initial: true,
+            onState: exitPromptOnCancelled
         })).value;
     }
 
