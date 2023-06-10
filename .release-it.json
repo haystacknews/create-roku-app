@@ -5,5 +5,8 @@
   "git": {
     "requireBranch": "master",
     "commitMessage": "chore: release v${version}"
+  },
+  "hooks": {
+    "before:init": "npm run build"
   }
 }
