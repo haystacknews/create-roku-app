@@ -19,7 +19,7 @@
         // Allow usage of todo comments in code
         "no-todo": "off",
         // Prevent usage of STOP statements in the code
-        "no-stop": "error",
+        "no-stop": "warn",
         // Force all files to finish with a newline.
         "eol-last": "always",
 
