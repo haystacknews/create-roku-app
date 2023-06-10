@@ -1,0 +1,9 @@
+{
+  "github": {
+    "release": true
+  },
+  "git": {
+    "requireBranch": "master",
+    "commitMessage": "chore: release v${version}"
+  }
+}

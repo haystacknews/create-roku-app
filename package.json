@@ -3,10 +3,14 @@
   "version": "0.1.2",
   "license": "MIT",
   "description": "Quickly scaffold a modern Roku app, including the best practices to enhance your development experience.",
-  "keywords": ["roku", "scaffold", "generator"],
+  "keywords": [
+    "roku",
+    "scaffold",
+    "generator"
+  ],
   "bugs": {
-    "url" : "https://github.com/haystacknews/create-roku-app/issues",
-    "email" : "arturo@haystack.tv"
+    "url": "https://github.com/haystacknews/create-roku-app/issues",
+    "email": "arturo@haystack.tv"
   },
   "repository": {
     "type": "git",
@@ -22,7 +26,8 @@
     "build": "tsc",
     "postbuild": "cp -r src/static dist/static/",
     "manual-test": "rm -rf test-project; ts-node src/index.ts --name \"Test Project\" --pm pnpm",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "release": "release-it"
   },
   "devDependencies": {
     "@types/chai": "^4.3.3",
@@ -40,6 +45,7 @@
     "eslint-plugin-no-only-tests": "^3.1.0",
     "mocha": "^10.1.0",
     "nyc": "^15.1.0",
+    "release-it": "^15.11.0",
     "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.8.4"
