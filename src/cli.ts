@@ -4,7 +4,6 @@ import generate from 'project-name-generator';
 import { hideBin } from 'yargs/helpers';
 import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
-import InfProgress from 'cli-infinity-progress';
 
 import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
 import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
@@ -21,8 +20,6 @@ function exitPromptOnCancelled(state: any) {
 }
 
 export async function cli() {
-    const progress = new InfProgress();
-
     // Collect initial answers
     let answers = recommendedAnswers;
     const argv = await yargs(hideBin(process.argv)).argv;
@@ -83,9 +80,9 @@ export async function cli() {
     ]);
 
     if (requiresDependencies) {
-        progress.setHeader('Searching latest dependencies').start();
+        console.log('Searching latest dependencies...');
         await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
-        progress.remove();
+        console.log('Done');
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {
@@ -129,7 +126,7 @@ export async function cli() {
     ]);
 
     if (answers.initRepo) {
-        progress.setHeader('Initializing Git repository');
+        console.log('Initializing git repository...');
         await new Promise((resolve, reject) => {
             const child = spawn('git', ['init'], {
                 cwd: folderName,
@@ -139,6 +136,7 @@ export async function cli() {
             child.on('error', reject);
             child.on('exit', resolve);
         });
+        console.log('Done!');
     }
 
     if (install) {
