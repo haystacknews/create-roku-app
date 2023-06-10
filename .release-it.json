@@ -1,5 +1,9 @@
 {
   "github": {
     "release": true
+  },
+  "git": {
+    "requireBranch": "setup-release-it",
+    "commitMessage": "chore: release v${version}"
   }
 }
