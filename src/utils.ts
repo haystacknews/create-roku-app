@@ -38,33 +38,54 @@ async function getPackageVersion(packageName: string) {
     });
 }
 
+enum dependencies {
+    bsc = 'brighterscript',
+    linter = '@rokucommunity/bslint',
+    formatter = 'brighterscript-formatter'
+}
+
 export async function generatePackageJson(answers: prompts.Answers<string>) {
     const contents = basePackageJson;
 
-    if (answers.language === 'bs') {
+    const requiresBsc = answers.language === 'bs';
+    const requiresLinter = answers.lintFormat === 'both' || answers.lintFormat === 'linter';
+    const requiresFormatter = answers.lintFormat === 'both' || answers.lintFormat === 'formatter';
+
+    const requiredDependencies = [];
+    if (requiresBsc) {
+        requiredDependencies.push(dependencies.bsc);
+    }
+    if (requiresLinter) {
+        requiredDependencies.push(dependencies.linter);
+    }
+    if (requiresFormatter) {
+        requiredDependencies.push(dependencies.formatter);
+    }
+
+    const [
+        bscVersion,
+        linterVersion,
+        formatterVersion
+    ] = await Promise.all(requiredDependencies.map(dep => getPackageVersion(dep)));
+
+    if (requiresBsc) {
         contents.scripts.prebuild = 'rm -rf dist';
         contents.scripts.build = 'bsc';
         contents.scripts['build:prod'] = 'npm run build -- --sourceMap=false';
-
-        const bsVersion = await getPackageVersion('brighterscript');
-        contents.devDependencies.brighterscript = `^${bsVersion}`;
+        contents.devDependencies.brighterscript = `^${bscVersion}`;
     }
 
-    if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
+    if (requiresLinter) {
         contents.scripts.lint = 'bslint --project config/bsconfig.lint.json --lintConfig config/bslint.jsonc';
         contents.scripts['lint:fix'] = 'npm run lint -- --fix';
-
-        const linterVersion = await getPackageVersion('@rokucommunity/bslint');
-        contents.devDependencies['@rokucommunity/bslint'] = `^${linterVersion}`;
+        contents.devDependencies[dependencies.linter] = `^${linterVersion}`;
     }
 
-    if (answers.lintFormat === 'both' || answers.lintFormat === 'formatter') {
+    if (requiresFormatter) {
         contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" --bsfmt-path "config/bsfmt.jsonc"';
         contents.scripts.format = 'npm run format:base -- --check';
         contents.scripts['format:fix'] = 'npm run format:base -- --write';
-
-        const formatterVersion = await getPackageVersion('brighterscript-formatter');
-        contents.devDependencies['brighterscript-formatter'] = `^${formatterVersion}`;
+        contents.devDependencies[dependencies.formatter] = `^${formatterVersion}`;
     }
 
     return contents;
@@ -137,7 +158,7 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
 
     if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
         bsconfig.lintConfig = 'config/bslint.jsonc';
-        bsconfig.plugins = ['@rokucommunity/bslint'];
+        bsconfig.plugins = [dependencies.linter];
 
         const bsconfigLintContent = {
             extends: 'bsconfig.base.json',
