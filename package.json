@@ -49,7 +49,6 @@
     }
   },
   "dependencies": {
-    "project-name-generator": "2.1.9",
     "prompts": "2.4.2",
     "yargs": "17.6.0"
   },

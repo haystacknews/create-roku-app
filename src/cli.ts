@@ -1,6 +1,5 @@
 import prompts from 'prompts';
 import yargs from 'yargs';
-import generate from 'project-name-generator';
 import { hideBin } from 'yargs/helpers';
 import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
@@ -14,6 +13,7 @@ import {
     generateReadme
 } from './utils';
 import { spawn } from 'child_process';
+import { names } from './names';
 
 // Exits the process when the prompt is cancelled
 // (e.g: when the user presses ctrl|cmd + c)
@@ -35,7 +35,7 @@ export async function cli() {
             type: 'text',
             name: 'name',
             message: 'What\'s the name of your app?',
-            initial: generate({ alliterative: true }).dashed,
+            initial: names[names.length * Math.random() | 0],
             onState: exitPromptOnCancelled
         })).name;
     } else {
