@@ -30,25 +30,18 @@
     "release": "release-it"
   },
   "devDependencies": {
-    "@types/chai": "^4.3.3",
-    "@types/mocha": "^10.0.0",
-    "@types/node": "^18.11.7",
+    "@types/node": "^18.16.17",
     "@types/project-name-generator": "^2.1.1",
-    "@types/prompts": "^2.4.1",
-    "@types/yargs": "^17.0.13",
-    "@typescript-eslint/eslint-plugin": "^5.41.0",
-    "@typescript-eslint/parser": "^5.41.0",
-    "chai": "^4.3.6",
+    "@types/prompts": "^2.4.4",
+    "@types/yargs": "^17.0.24",
+    "@typescript-eslint/eslint-plugin": "^5.59.9",
+    "@typescript-eslint/parser": "^5.59.9",
     "cz-conventional-changelog": "^3.3.0",
-    "eslint": "^8.26.0",
-    "eslint-plugin-github": "^4.4.0",
-    "eslint-plugin-no-only-tests": "^3.1.0",
-    "mocha": "^10.1.0",
-    "nyc": "^15.1.0",
+    "eslint": "^8.42.0",
+    "eslint-plugin-github": "^4.8.0",
     "release-it": "^15.11.0",
-    "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.5"
   },
   "config": {
     "commitizen": {
@@ -56,8 +49,13 @@
     }
   },
   "dependencies": {
-    "project-name-generator": "^2.1.9",
-    "prompts": "^2.4.2",
-    "yargs": "^17.6.0"
+    "project-name-generator": "2.1.9",
+    "prompts": "2.4.2",
+    "yargs": "17.6.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "json5@<1.0.2": ">=1.0.2"
+    }
   }
 }
