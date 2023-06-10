@@ -6,7 +6,13 @@ import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
 
 import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
-import { generatePackageJson, generateVscodeLaunchConfig, generateManifestString, generateBsConfigFiles } from './utils';
+import {
+    generatePackageJson,
+    generateVscodeLaunchConfig,
+    generateManifestString,
+    generateBsConfigFiles,
+    generateReadme
+} from './utils';
 import { spawn } from 'child_process';
 
 // Exits the process when the prompt is cancelled
@@ -76,7 +82,8 @@ export async function cli() {
     await Promise.all([
         mkdir(`${folderName}/src`),
         mkdir(`${folderName}/.vscode`),
-        copyFile(resolve(__dirname, './static/_gitignore'), `${folderName}/.gitignore`)
+        copyFile(resolve(__dirname, './static/_gitignore'), `${folderName}/.gitignore`),
+        writeFile(`${folderName}/README.md`, generateReadme(answers))
     ]);
 
     if (requiresDependencies) {

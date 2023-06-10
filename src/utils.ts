@@ -44,12 +44,17 @@ enum dependencies {
     formatter = 'brighterscript-formatter'
 }
 
-export async function generatePackageJson(answers: prompts.Answers<string>) {
-    const contents = basePackageJson;
-
+function getDepsRequirements(answers: prompts.Answers<string>) {
     const requiresBsc = answers.language === 'bs';
     const requiresLinter = answers.lintFormat === 'both' || answers.lintFormat === 'linter';
     const requiresFormatter = answers.lintFormat === 'both' || answers.lintFormat === 'formatter';
+    return [requiresBsc, requiresLinter, requiresFormatter];
+}
+
+export async function generatePackageJson(answers: prompts.Answers<string>) {
+    const contents = basePackageJson;
+
+    const [requiresBsc, requiresLinter, requiresFormatter] = getDepsRequirements(answers);
 
     const requiredDependencies = [];
     if (requiresBsc) {
@@ -146,17 +151,19 @@ export function generateVscodeLaunchConfig(answers: prompts.Answers<string>) {
 export function generateBsConfigFiles(folderName: string, answers: prompts.Answers<string>): { path: string; content: string }[] {
     const files: { path: string; content: string }[] = [];
 
+    const [requiresBsc, requiresLinter] = getDepsRequirements(answers);
+
     let bsconfig: any = {};
     const hostAndPwd = {
         host: '',
         password: ''
     };
 
-    if (answers.language === 'bs') {
+    if (requiresBsc) {
         bsconfig.sourceMap = true;
     }
 
-    if (answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
+    if (requiresLinter) {
         bsconfig.lintConfig = 'config/bslint.jsonc';
         bsconfig.plugins = [dependencies.linter];
 
@@ -176,7 +183,7 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
 
     let finalBsConfig = {};
 
-    if (answers.language === 'bs' || answers.lintFormat === 'both' || answers.lintFormat === 'linter') {
+    if (requiresBsc || requiresLinter) {
         bsconfig = { ...bsconfigBase, ...bsconfig };
         files.push({
             path: `${folderName}/config/bsconfig.base.json`,
@@ -199,4 +206,63 @@ export function generateBsConfigFiles(folderName: string, answers: prompts.Answe
     );
 
     return files;
+}
+
+export function generateReadme(answers: prompts.Answers<string>) {
+    const [requiresBsc, requiresLinter, requiresFormatter] = getDepsRequirements(answers);
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    const requiresDependencies = requiresBsc || requiresLinter || requiresFormatter;
+
+    let text = `# Welcome to ${answers.name}
+
+> This project was created using [\`npx create-roku-app\`](https://github.com/haystacknews/create-roku-app)
+
+## Before you start
+`;
+
+    if (requiresDependencies) {
+        text += `\n1. Install the project dependencies if you haven't done that yet.
+`;
+    }
+
+    text += `
+1. Open the \`bsconfig.json\` file and enter the password for your Roku device.
+
+1. Optionally you can hardcode your Roku device's IP in the \`host\` field. If you do so make sure to remove the \`host\` entry from the \`.vscode/launch.json\` settings.
+
+## Launching your app
+
+> This project assumes that you will be using VSCode as your code editor.
+
+1. Go to the \`Run and Debug\` panel.
+
+1. Select the option \`Launch ${answers.name} (dev)\`
+`;
+
+    if (requiresDependencies) {
+        text += '\n## NPM Commands available\n';
+    }
+
+    if (requiresBsc) {
+        text += `\n- \`build\`: Builds your project with [\`brighterscript\`](https://github.com/rokucommunity/brighterscript). Includes source maps.
+
+- \`build:prod\`: Builds your project without source maps.
+`;
+    }
+
+    if (requiresLinter) {
+        text += `\n- \`lint\`: Lints your source files with [\`@rokucommunity/bslint\`](https://github.com/rokucommunity/bslint)
+
+- \`lint:fix\`: Lints your source files and applies automatic fixes.
+`;
+    }
+
+    if (requiresFormatter) {
+        text += `\n- \`format\`: Formats your source files with [\`brighterscript-formatter\`](https://github.com/rokucommunity/brighterscript-formatter)
+
+- \`format:fix\`: Formats your source files and applies automatic fixes.
+`;
+    }
+
+    return text;
 }
