@@ -121,7 +121,8 @@ export async function cli() {
         mkdir(`${folderName}/src/components`),
         mkdir(`${folderName}/src/source`),
         writeFile(`${folderName}/src/manifest`, generateManifestString(answers)),
-        writeFile(`${folderName}/.vscode/launch.json`, JSON.stringify(generateVscodeLaunchConfig(answers), null, 4))
+        writeFile(`${folderName}/.vscode/launch.json`, JSON.stringify(generateVscodeLaunchConfig(answers), null, 4)),
+        copyFile(resolve(__dirname, './static/extensions.json'), `${folderName}/.vscode/extensions.json`)
     ]);
 
     // Create .vscode tasks configuration
