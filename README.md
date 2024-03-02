@@ -55,6 +55,8 @@ These are only available as CLI `--flags` and will not appear on the questions l
 
 - `--recommended`: Start a project with the recommended options values.
 
+- `--vanilla`: Start a project with minimal options and dependencies.
+
 
 ## Contribute
 
