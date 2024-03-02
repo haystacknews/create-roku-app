@@ -1,6 +1,6 @@
 {
   "name": "create-roku-app",
-  "version": "1.0.0",
+  "version": "0.2.2",
   "license": "MIT",
   "description": "Quickly scaffold a modern Roku app, including the best practices to enhance your development experience.",
   "keywords": [
