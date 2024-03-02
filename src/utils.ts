@@ -87,7 +87,7 @@ export async function generatePackageJson(answers: prompts.Answers<string>) {
     if (requiresFormatter) {
         const formatterVersion = await getPackageVersion(dependencies.formatter);
         console.info(`Using ${dependencies.formatter} ^${formatterVersion}`);
-        contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" --bsfmt-path "config/bsfmt.jsonc"';
+        contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" "!**/roku_modules/**/*" --bsfmt-path "config/bsfmt.jsonc"';
         contents.scripts.format = 'npm run format:base -- --check';
         contents.scripts['format:fix'] = 'npm run format:base -- --write';
         contents.devDependencies[dependencies.formatter] = `^${formatterVersion}`;

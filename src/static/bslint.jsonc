@@ -22,6 +22,14 @@
         "no-stop": "warn",
         // Force all files to finish with a newline.
         "eol-last": "always",
+        // Ensures that all the color values follow the same prefix formatting (e.g: #FFFFFF)
+        "color-format": "hash-hex",
+        "color-case": "upper",
+        // Defines the usage of the color alpha value. ie. `#xxxxxxFF`.
+        "color-alpha": "off",
+        // Enforces Roku's broadcast safe color 6.4 certification requirement
+        // Reference: https://developer.roku.com/docs/developer-program/certification/certification.md#6-ui-and-graphics
+        "color-cert": "off",
 
         /* Strictness rules */
         // Enforce both arguments and return `as` type annotations.
@@ -34,14 +42,14 @@
         "unsafe-path-loop": "warn",
         // Loop iterator variables should not be outside the loop.
         "unsafe-iterators": "error",
-        // Warn about unreachable code.
-        "unreachable-code": "warn",
         // Warn about inconsistent variable casing.
         "case-sensitivity": "warn",
         // Warn about variables being set but never used.
         // Set as "warn" instead of "error" beacuse we may want to allow unused variables
         // that will be shown on the crash logs.
         "unused-variable": "warn",
+        // Warn about unreachable code.
+        "unreachable-code": "warn",
         // verifies consistency of `sub` / `function` returned values
         // (missing return, missing value, returned value while function is `as void`,...)
         "consistent-return": "error"
@@ -50,6 +58,7 @@
     "ignores": [
         "components/lib/**/*",
         "source/lib/**/*",
-        "**/bslib.brs"
+        "**/bslib.brs",
+        "**/roku_modules/**/*"
     ]
 }

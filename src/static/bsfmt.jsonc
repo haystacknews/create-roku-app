@@ -3,8 +3,11 @@
     "indentStyle": "spaces",
     // The number of spaces to use when `indentStyle` is "spaces".
     "indentSpaceCount": 4,
+    // If true, the code is indented. If false, the existing indentation is left intact.
+    "formatIndent": true,
     // Enforces all keywords and types to be lowercase.
     "keywordCase": "lower",
+    "typeCase": "lower",
     // Forces all composite keywords (i.e. `elseif`, `endwhile`, etc...) to be consistent.
     // If "split", they are split into their alternatives (`else if`, `end while`).
     "compositeKeywords": "split",
@@ -17,5 +20,7 @@
     "formatSingleLineCommentType": "original",
     // For multi-line objects and arrays, move everything after
     // the `{` or `[` and everything before the `}` or `]` onto a new line.
-    "formatMultiLineObjectsAndArrays": true
+    "formatMultiLineObjectsAndArrays": true,
+    // Sort imports alphabetically
+    "sortImports": true
 }
