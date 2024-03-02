@@ -125,11 +125,10 @@ export const basePackageJson: any = {
 export const baseVscodeConfig: Record<string, any> = {
     'type': 'brightscript',
     'request': 'launch',
-    // eslint-disable-next-line no-template-curly-in-string
-    'host': '${promptForHost}',
     'stopOnEntry': false,
     'enableDebuggerAutoRecovery': false,
-    'stopDebuggerOnAppExit': false
+    'stopDebuggerOnAppExit': false,
+    'rendezvousTracking': false
 };
 
 export const VscodeTasks: Record<string, any> = {
