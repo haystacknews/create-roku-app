@@ -70,6 +70,7 @@ export const manifest = new Map<string, string>([
     ['major_version', '1'],
     ['minor_version', '0'],
     ['build_version', '0'],
+    ['supports_input_launch', '1'],
     ['mm_icon_focus_hd', '# TODO: Add path to 290x218 image'],
     ['mm_icon_focus_sd', '# TODO: Add path to 246x140 image'],
     ['splash_screen_hd', '# TODO: Add path to 1280x720 image'],
