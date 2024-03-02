@@ -118,7 +118,10 @@ export const basePackageJson: any = {
     version: '0.0.1',
     dependencies: {},
     devDependencies: {},
-    scripts: {}
+    scripts: {},
+    ropm: {
+        rootDir: 'src'
+    }
 };
 
 export const baseVscodeConfig: Record<string, any> = {
