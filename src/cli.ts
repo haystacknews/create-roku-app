@@ -4,7 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
 
-import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
+import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers, vanillaAnswers } from './data';
 import {
     generatePackageJson,
     generateVscodeLaunchConfig,
@@ -27,7 +27,7 @@ function exitPromptOnCancelled(state: any) {
 
 export async function cli() {
     // Collect initial answers
-    let answers = recommendedAnswers;
+    let answers: prompts.Answers<string> = {};
     const argv = await yargs(hideBin(process.argv)).argv;
 
     if (!argv.name) {
@@ -42,14 +42,23 @@ export async function cli() {
         answers.name = argv.name;
     }
 
-    if (!argv.recommended) {
-        answers = {
-            ...answers,
-            ...(await prompts(
-                questions.map(q => ({ ...q, onState: exitPromptOnCancelled }))
-            ))
-        };
+    if (argv.recommended) {
+        console.info("Using recommended configuration...");
+        Object.assign(answers, recommendedAnswers);
+    } else if (argv.vanilla) {
+        console.info("Using vanilla configuration...");
+        Object.assign(answers, vanillaAnswers);
+    } else {
+        Object.assign(answers, await prompts(questions.map(q => ({ ...q, onState: exitPromptOnCancelled }))));
     }
+
+    const shouldGitInit = (await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Should we initialize a git repository?',
+        initial: true,
+        onState: exitPromptOnCancelled
+    })).value;
 
     // Optional question to install dependencies, only if they would be required
     let install = false;
@@ -89,7 +98,6 @@ export async function cli() {
     if (requiresDependencies) {
         console.log('Searching latest dependencies...');
         await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
-        console.log('Done');
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {
@@ -113,7 +121,8 @@ export async function cli() {
         mkdir(`${folderName}/src/components`),
         mkdir(`${folderName}/src/source`),
         writeFile(`${folderName}/src/manifest`, generateManifestString(answers)),
-        writeFile(`${folderName}/.vscode/launch.json`, JSON.stringify(generateVscodeLaunchConfig(answers), null, 4))
+        writeFile(`${folderName}/.vscode/launch.json`, JSON.stringify(generateVscodeLaunchConfig(answers), null, 4)),
+        copyFile(resolve(__dirname, './static/extensions.json'), `${folderName}/.vscode/extensions.json`)
     ]);
 
     // Create .vscode tasks configuration
@@ -132,7 +141,7 @@ export async function cli() {
         writeFile(`${folderName}/src/source/main.${answers.language}`, mainScript(answers.inspector === 'plugin'))
     ]);
 
-    if (answers.initRepo) {
+    if (shouldGitInit) {
         console.log('Initializing git repository...');
         await new Promise((resolve, reject) => {
             const child = spawn('git', ['init'], {
@@ -161,9 +170,15 @@ export async function cli() {
         });
     }
 
+    if (answers.name.toLowerCase().includes('roku')) {
+        console.warn('\nWarning: The name of your app contains "Roku", which is prohibited.')
+    }
+
     console.log(`\nDone! Remaining steps for you:`);
     console.log(`- Open your project with \`code ${folderName}\`.`);
     console.log(`- Open \`bsconfig.json\` and set the preferred password for your device.`);
     console.log('- Go to the Run & Debug panel to build and launch your application.\n');
+
+    console.log('Learn modern Roku development for free at: https://www.arturocuya.com?utm_source=create-roku-app&utm_medium=terminal')
     console.log('Happy coding!');
 }

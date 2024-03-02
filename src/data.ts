@@ -56,12 +56,6 @@ export const questions: Array<prompts.PromptObject> = [
                 value: 'none'
             }
         ]
-    },
-    {
-        type: 'confirm',
-        name: 'initRepo',
-        message: 'Should we initialize a git repository?',
-        initial: true
     }
 ];
 
@@ -71,22 +65,28 @@ export const recommendedAnswers: prompts.Answers<string> = {
     inspector: 'plugin'
 };
 
+export const vanillaAnswers: prompts.Answers<string> = {
+    language: 'brs',
+    lintFormat: 'none',
+    inspector: 'none'
+}
+
 export const manifest = new Map<string, string>([
     ['ui_resolutions', 'fhd'],
     ['major_version', '1'],
     ['minor_version', '0'],
     ['build_version', '0'],
+    ['supports_input_launch', '1'],
     ['mm_icon_focus_hd', '# TODO: Add path to 290x218 image'],
     ['mm_icon_focus_sd', '# TODO: Add path to 246x140 image'],
     ['splash_screen_hd', '# TODO: Add path to 1280x720 image'],
     ['splash_screen_sd', '# TODO: Add path to 720x480 image']
 ]);
 
-export const mainSceneXml = (suffix: string) => `<?xml version="1.0" encoding="UTF-8"?>
-<component name="MainScene" extends="Scene">
+export const mainSceneXml = (suffix: string) => `<component name="MainScene" extends="Scene">
     <script type="text/brightscript" uri="MainScene.${suffix}" />
     <children>
-        <Label id="welcome" />
+        <Label id="welcome" translation="[96, 54]" />
     </children>
 </component>
 `;
@@ -94,6 +94,11 @@ export const mainSceneXml = (suffix: string) => `<?xml version="1.0" encoding="U
 export const mainSceneScript = `sub init()
     label = m.top.findNode("welcome")
     label.text = "Hello from create-roku-app"
+
+    ' This is required to pass certification.
+    ' Specified in section 3.2 of the Roku Certification Criteria.
+    ' Reference: https://developer.roku.com/docs/developer-program/certification/certification.md#3-performance
+    m.top.signalBeacon("AppLaunchComplete")
 end sub
 `;
 
@@ -125,17 +130,19 @@ export const basePackageJson: any = {
     version: '0.0.1',
     dependencies: {},
     devDependencies: {},
-    scripts: {}
+    scripts: {},
+    ropm: {
+        rootDir: 'src'
+    }
 };
 
 export const baseVscodeConfig: Record<string, any> = {
     'type': 'brightscript',
     'request': 'launch',
-    // eslint-disable-next-line no-template-curly-in-string
-    'host': '${promptForHost}',
     'stopOnEntry': false,
     'enableDebuggerAutoRecovery': false,
-    'stopDebuggerOnAppExit': false
+    'stopDebuggerOnAppExit': false,
+    'rendezvousTracking': false
 };
 
 export const VscodeTasks: Record<string, any> = {

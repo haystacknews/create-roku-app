@@ -67,13 +67,9 @@ export async function generatePackageJson(answers: prompts.Answers<string>) {
         requiredDependencies.push(dependencies.formatter);
     }
 
-    const [
-        bscVersion,
-        linterVersion,
-        formatterVersion
-    ] = await Promise.all(requiredDependencies.map(dep => getPackageVersion(dep)));
-
     if (requiresBsc) {
+        const bscVersion = await getPackageVersion(dependencies.bsc);
+        console.info(`Using ${dependencies.bsc} ^${bscVersion}`);
         contents.scripts.prebuild = 'rm -rf dist';
         contents.scripts.build = 'bsc';
         contents.scripts['build:prod'] = 'npm run build -- --sourceMap=false';
@@ -81,13 +77,17 @@ export async function generatePackageJson(answers: prompts.Answers<string>) {
     }
 
     if (requiresLinter) {
+        const linterVersion = await getPackageVersion(dependencies.linter);
+        console.info(`Using ${dependencies.linter} ^${linterVersion}`);
         contents.scripts.lint = 'bslint --project config/bsconfig.lint.json --lintConfig config/bslint.jsonc';
         contents.scripts['lint:fix'] = 'npm run lint -- --fix';
         contents.devDependencies[dependencies.linter] = `^${linterVersion}`;
     }
 
     if (requiresFormatter) {
-        contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" --bsfmt-path "config/bsfmt.jsonc"';
+        const formatterVersion = await getPackageVersion(dependencies.formatter);
+        console.info(`Using ${dependencies.formatter} ^${formatterVersion}`);
+        contents.scripts['format:base'] = 'bsfmt "src/**/*.brs" "src/**/*.bs" "!src/components/lib/**/*" "!src/source/lib/**/*" "!**/bslib.brs" "!**/roku_modules/**/*" --bsfmt-path "config/bsfmt.jsonc"';
         contents.scripts.format = 'npm run format:base -- --check';
         contents.scripts['format:fix'] = 'npm run format:base -- --write';
         contents.devDependencies[dependencies.formatter] = `^${formatterVersion}`;
