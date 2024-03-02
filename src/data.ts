@@ -88,6 +88,11 @@ export const mainSceneXml = (suffix: string) => `<component name="MainScene" ext
 export const mainSceneScript = `sub init()
     label = m.top.findNode("welcome")
     label.text = "Hello from create-roku-app"
+
+    ' This is required to pass certification.
+    ' Specified in section 3.2 of the Roku Certification Criteria.
+    ' Reference: https://developer.roku.com/docs/developer-program/certification/certification.md#3-performance
+    m.top.signalBeacon("AppLaunchComplete")
 end sub
 `;
 
