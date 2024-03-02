@@ -178,5 +178,7 @@ export async function cli() {
     console.log(`- Open your project with \`code ${folderName}\`.`);
     console.log(`- Open \`bsconfig.json\` and set the preferred password for your device.`);
     console.log('- Go to the Run & Debug panel to build and launch your application.\n');
+
+    console.log('Learn modern Roku development for free at: https://arturocuya.com?utm_source=create-roku-app&utm_medium=terminal')
     console.log('Happy coding!');
 }
