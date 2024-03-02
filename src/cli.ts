@@ -51,6 +51,14 @@ export async function cli() {
         };
     }
 
+    const shouldGitInit = (await prompts({
+        type: 'confirm',
+        name: 'value',
+        message: 'Should we initialize a git repository?',
+        initial: true,
+        onState: exitPromptOnCancelled
+    })).value;
+
     // Optional question to install dependencies, only if they would be required
     let install = false;
     // Use npm by default, but allow the user to override
@@ -132,7 +140,7 @@ export async function cli() {
         writeFile(`${folderName}/src/source/main.${answers.language}`, mainScript(answers.inspector === 'plugin'))
     ]);
 
-    if (answers.initRepo) {
+    if (shouldGitInit) {
         console.log('Initializing git repository...');
         await new Promise((resolve, reject) => {
             const child = spawn('git', ['init'], {

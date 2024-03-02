@@ -56,12 +56,6 @@ export const questions: Array<prompts.PromptObject> = [
                 value: 'none'
             }
         ]
-    },
-    {
-        type: 'confirm',
-        name: 'initRepo',
-        message: 'Should we initialize a git repository?',
-        initial: true
     }
 ];
 
