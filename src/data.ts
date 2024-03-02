@@ -76,11 +76,10 @@ export const manifest = new Map<string, string>([
     ['splash_screen_sd', '# TODO: Add path to 720x480 image']
 ]);
 
-export const mainSceneXml = (suffix: string) => `<?xml version="1.0" encoding="UTF-8"?>
-<component name="MainScene" extends="Scene">
+export const mainSceneXml = (suffix: string) => `<component name="MainScene" extends="Scene">
     <script type="text/brightscript" uri="MainScene.${suffix}" />
     <children>
-        <Label id="welcome" />
+        <Label id="welcome" translation="[96, 54]" />
     </children>
 </component>
 `;
