@@ -170,6 +170,10 @@ export async function cli() {
         });
     }
 
+    if (answers.name.toLowerCase().includes('roku')) {
+        console.warn('\nWarning: The name of your app contains "Roku", which is prohibited.')
+    }
+
     console.log(`\nDone! Remaining steps for you:`);
     console.log(`- Open your project with \`code ${folderName}\`.`);
     console.log(`- Open \`bsconfig.json\` and set the preferred password for your device.`);
