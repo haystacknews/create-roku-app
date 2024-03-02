@@ -4,7 +4,7 @@ import { hideBin } from 'yargs/helpers';
 import { copyFile, mkdir, writeFile } from 'fs/promises';
 import { resolve } from 'path';
 
-import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers } from './data';
+import { mainSceneScript, mainSceneXml, mainScript, questions, recommendedAnswers, vanillaAnswers } from './data';
 import {
     generatePackageJson,
     generateVscodeLaunchConfig,
@@ -27,7 +27,7 @@ function exitPromptOnCancelled(state: any) {
 
 export async function cli() {
     // Collect initial answers
-    let answers = recommendedAnswers;
+    let answers: prompts.Answers<string> = {};
     const argv = await yargs(hideBin(process.argv)).argv;
 
     if (!argv.name) {
@@ -42,13 +42,14 @@ export async function cli() {
         answers.name = argv.name;
     }
 
-    if (!argv.recommended) {
-        answers = {
-            ...answers,
-            ...(await prompts(
-                questions.map(q => ({ ...q, onState: exitPromptOnCancelled }))
-            ))
-        };
+    if (argv.recommended) {
+        console.info("Using recommended configuration...");
+        Object.assign(answers, recommendedAnswers);
+    } else if (argv.vanilla) {
+        console.info("Using vanilla configuration...");
+        Object.assign(answers, vanillaAnswers);
+    } else {
+        Object.assign(answers, await prompts(questions.map(q => ({ ...q, onState: exitPromptOnCancelled }))));
     }
 
     const shouldGitInit = (await prompts({
@@ -97,7 +98,6 @@ export async function cli() {
     if (requiresDependencies) {
         console.log('Searching latest dependencies...');
         await writeFile(`${folderName}/package.json`, JSON.stringify(await generatePackageJson(answers), null, 4));
-        console.log('Done');
     }
 
     if (answers.language === 'bs' || answers.lintFormat !== 'none') {

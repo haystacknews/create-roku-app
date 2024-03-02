@@ -65,6 +65,12 @@ export const recommendedAnswers: prompts.Answers<string> = {
     inspector: 'plugin'
 };
 
+export const vanillaAnswers: prompts.Answers<string> = {
+    language: 'brs',
+    lintFormat: 'none',
+    inspector: 'none'
+}
+
 export const manifest = new Map<string, string>([
     ['ui_resolutions', 'fhd'],
     ['major_version', '1'],
