@@ -10,8 +10,6 @@ Quickly scaffold a modern Roku app, including the best practices to enhance your
 
 `Node.js` · `TypeScript` · `npm (published package)` · targets `BrightScript` / `BrighterScript` Roku projects
 
-<!-- TODO (Arturo): confirm the implementation language above. The package is published to npm and run via `npx`; verify whether the CLI source is TypeScript or JavaScript before publishing this line. -->
-
 ## Features
 
 - Interactive prompts to scaffold a complete Roku project in seconds.
